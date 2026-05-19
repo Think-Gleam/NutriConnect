@@ -106,6 +106,18 @@ export function FoodCard({ item, centers = [], origin, onChange, onDelete }: Foo
           {item.status}
         </span>
         <div className="flex gap-2">
+          {onDelete && (
+            <button
+              type="button"
+              onClick={() => onDelete()}
+              disabled={busy !== null}
+              className="rounded-md border border-rose-200 px-2 py-1.5 text-xs font-medium text-rose-600 transition hover:bg-rose-50 disabled:cursor-not-allowed disabled:opacity-50"
+              title="Remove posting"
+              aria-label="Remove posting"
+            >
+              <Trash2 className="h-3.5 w-3.5" />
+            </button>
+          )}
           <button
             type="button"
             onClick={handleClaim}
