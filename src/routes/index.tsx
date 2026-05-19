@@ -79,7 +79,7 @@ function HomePage() {
                   origin={location}
                   onChange={refresh}
                   onDelete={() => removeItem(item.id)}
-                />)
+                />)}
               ))}
             </div>
           )}
