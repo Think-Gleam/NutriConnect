@@ -2,13 +2,23 @@
 import { useEffect, useState, type FormEvent } from "react";
 import type { FoodCategory } from "../services/inventory";
 import { useSurplusInventory } from "../hooks/useSurplusInventory";
+import { notifyHighPriorityAlert } from "../services/alerts";
 
 const CATEGORIES: FoodCategory[] = ["Protein", "Veggie", "Fruit", "Grain"];
 
-function defaultExpiry(): string {
-  const d = new Date(Date.now() + 1000 * 60 * 60 * 24);
+function toLocalInputValue(d: Date): string {
   d.setSeconds(0, 0);
-  return d.toISOString().slice(0, 16);
+  // Convert to local-time "YYYY-MM-DDTHH:mm" expected by datetime-local inputs.
+  const tzOffset = d.getTimezoneOffset() * 60_000;
+  return new Date(d.getTime() - tzOffset).toISOString().slice(0, 16);
+}
+
+function defaultExpiry(): string {
+  return toLocalInputValue(new Date(Date.now() + 1000 * 60 * 60 * 24));
+}
+
+function nowLocal(): string {
+  return toLocalInputValue(new Date());
 }
 
 export function VendorDashboard() {
@@ -18,27 +28,57 @@ export function VendorDashboard() {
   const [category, setCategory] = useState<FoodCategory>("Veggie");
   const [quantity, setQuantity] = useState(1);
   const [expiry, setExpiry] = useState("");
-  const [submittedAt, setSubmittedAt] = useState<number | null>(null);
+  const [minExpiry, setMinExpiry] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [statusMsg, setStatusMsg] = useState<string | null>(null);
 
-  // Set default expiry on client only to avoid SSR/CSR hydration mismatch.
+  // Set defaults on the client only to avoid SSR/CSR hydration mismatch.
   useEffect(() => {
     setExpiry((prev) => prev || defaultExpiry());
+    setMinExpiry(nowLocal());
+    // Keep the min attribute fresh as time passes.
+    const id = window.setInterval(() => setMinExpiry(nowLocal()), 60_000);
+    return () => window.clearInterval(id);
   }, []);
+
+  const expiryInPast =
+    expiry.length > 0 && new Date(expiry).getTime() <= Date.now();
+  const canSubmit =
+    vendorName.trim().length > 0 &&
+    itemName.trim().length > 0 &&
+    quantity > 0 &&
+    expiry.length > 0 &&
+    !expiryInPast;
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
-    if (!vendorName.trim() || !itemName.trim() || quantity <= 0) return;
-    await addItem({
+    setError(null);
+    setStatusMsg(null);
+    if (!vendorName.trim() || !itemName.trim() || quantity <= 0) {
+      setError("Please fill in all fields with valid values.");
+      return;
+    }
+    if (new Date(expiry).getTime() <= Date.now()) {
+      setError("Expiry time must be in the future.");
+      return;
+    }
+    const created = await addItem({
       vendorName: vendorName.trim(),
       itemName: itemName.trim(),
       category,
       quantity,
       expiryTime: new Date(expiry).toISOString(),
     });
+    setStatusMsg("✓ Posted successfully — visible to nearby CHCs.");
+    if (category === "Protein") {
+      const alert = await notifyHighPriorityAlert(created);
+      if (alert.delivered) {
+        setStatusMsg(`✓ Posted · ${alert.message ?? "High-priority alert dispatched."}`);
+      }
+    }
     setItemName("");
     setQuantity(1);
     setExpiry(defaultExpiry());
-    setSubmittedAt(Date.now());
   }
 
   return (
