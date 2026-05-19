@@ -1,0 +1,7 @@
+# NutriConnect
+
+> NutriConnect routes surplus nutritious food from local vendors to nearby Community Health Centers in Mardan, Pakistan, supporting UN SDG 3 — Good Health and Well-Being.
+
+## Pages
+
+- [Home](/): Live surplus inventory, vendor dashboard, nearby Community Health Centers, and real-time impact metrics.
