@@ -5,6 +5,11 @@ import { VendorDashboard } from "../components/VendorDashboard";
 import { ImpactDashboard } from "../components/ImpactDashboard";
 import { FoodCard } from "../components/FoodCard";
 import { useSurplusInventory } from "../hooks/useSurplusInventory";
+import { useLocation } from "../hooks/useLocation";
+import {
+  fetchNearbyHealthCenters,
+  type CommunityHealthCenter,
+} from "../services/healthCenters";
 
 const MapView = lazy(() =>
   import("../components/MapView").then((m) => ({ default: m.MapView })),
@@ -15,9 +20,14 @@ export const Route = createFileRoute("/")({
 });
 
 function HomePage() {
-  const { items } = useSurplusInventory();
+  const { items, refresh } = useSurplusInventory();
+  const { location } = useLocation();
+  const [centers, setCenters] = useState<CommunityHealthCenter[]>([]);
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
+  useEffect(() => {
+    fetchNearbyHealthCenters(location).then(setCenters);
+  }, [location.lat, location.lng]);
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900">
