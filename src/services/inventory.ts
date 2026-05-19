@@ -61,7 +61,7 @@ function readStore(): SurplusFoodItem[] {
     }
     const parsed = JSON.parse(raw) as SurplusFoodItem[];
     // Migrate legacy items missing `status`.
-    return parsed.map((i) => ({ status: "available", ...i }));
+    return parsed.map((i) => ({ ...i, status: i.status ?? "available" }));
   } catch {
     return seedItems;
   }
