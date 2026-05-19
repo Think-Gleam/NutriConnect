@@ -72,31 +72,54 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "NutriConnect — Surplus food for Community Health Centers (SDG 3)" },
+      { title: "NutriConnect — Surplus Food for Health Centers" },
       {
         name: "description",
         content:
-          "NutriConnect routes surplus nutritious food from local vendors to nearby Community Health Centers, advancing UN SDG 3.",
+          "NutriConnect routes surplus nutritious food from local vendors to nearby Community Health Centers in real-time, supporting UN SDG 3.",
       },
-      { property: "og:title", content: "NutriConnect — Surplus food for Community Health Centers (SDG 3)" },
+      { property: "og:title", content: "NutriConnect — Surplus Food for Health Centers" },
       {
         property: "og:description",
         content:
-          "Connect surplus food with Community Health Centers to combat malnutrition.",
+          "NutriConnect routes surplus nutritious food from local vendors to nearby Community Health Centers in real-time, supporting UN SDG 3.",
       },
       { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary" },
-      { name: "twitter:title", content: "NutriConnect — Surplus food for Community Health Centers (SDG 3)" },
-      { name: "description", content: "NutriConnect routes surplus nutritious food from local vendors to nearby Community Health Centers in real-time, fighting malnutrition and supporting UN SDG 3." },
-      { property: "og:description", content: "NutriConnect routes surplus nutritious food from local vendors to nearby Community Health Centers in real-time, fighting malnutrition and supporting UN SDG 3." },
-      { name: "twitter:description", content: "NutriConnect routes surplus nutritious food from local vendors to nearby Community Health Centers in real-time, fighting malnutrition and supporting UN SDG 3." },
+      { property: "og:site_name", content: "NutriConnect" },
+      { property: "og:url", content: "https://nutriconnect-web.lovable.app/" },
       { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/UKXaDwCVivaudjGuxwUlu11jQQd2/social-images/social-1779190328139-A_sleek,_modern_web_dashboard_202605191632.webp" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "NutriConnect — Surplus Food for Health Centers" },
+      {
+        name: "twitter:description",
+        content:
+          "NutriConnect routes surplus nutritious food from local vendors to nearby Community Health Centers in real-time, supporting UN SDG 3.",
+      },
       { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/UKXaDwCVivaudjGuxwUlu11jQQd2/social-images/social-1779190328139-A_sleek,_modern_web_dashboard_202605191632.webp" },
     ],
     links: [
+      { rel: "stylesheet", href: appCss },
+    ],
+    scripts: [
       {
-        rel: "stylesheet",
-        href: appCss,
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "Organization",
+              name: "NutriConnect",
+              url: "https://nutriconnect-web.lovable.app/",
+              description:
+                "NutriConnect connects surplus food from local vendors with Community Health Centers to combat malnutrition and support UN SDG 3.",
+            },
+            {
+              "@type": "WebSite",
+              name: "NutriConnect",
+              url: "https://nutriconnect-web.lovable.app/",
+            },
+          ],
+        }),
       },
     ],
   }),
