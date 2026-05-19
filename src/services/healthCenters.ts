@@ -86,9 +86,9 @@ function buildAddress(tags: Record<string, string> = {}): string {
     tags["addr:housenumber"],
     tags["addr:street"],
     tags["addr:suburb"],
-    tags["addr:city"] ?? "Islamabad",
+    tags["addr:city"] ?? "Mardan",
   ].filter(Boolean);
-  return parts.join(", ") || tags["addr:full"] || "Islamabad, Pakistan";
+  return parts.join(", ") || tags["addr:full"] || "Mardan, Pakistan";
 }
 
 export async function fetchNearbyHealthCenters(
@@ -97,7 +97,7 @@ export async function fetchNearbyHealthCenters(
 ): Promise<CommunityHealthCenter[]> {
   // Only call the network on the client — Overpass isn't reachable during SSR
   // on Cloudflare Workers and we don't want to delay first paint anyway.
-  if (typeof window === "undefined") return ISLAMABAD_FALLBACK;
+  if (typeof window === "undefined") return MARDAN_FALLBACK;
 
   const query = `[
     out:json][timeout:20];
@@ -134,10 +134,10 @@ export async function fetchNearbyHealthCenters(
       })
       .filter((c): c is CommunityHealthCenter => c !== null);
 
-    if (centers.length === 0) return ISLAMABAD_FALLBACK;
+    if (centers.length === 0) return MARDAN_FALLBACK;
     return centers.slice(0, 40);
   } catch (err) {
     console.warn("Overpass fetch failed, using fallback CHCs:", err);
-    return ISLAMABAD_FALLBACK;
+    return MARDAN_FALLBACK;
   }
 }
