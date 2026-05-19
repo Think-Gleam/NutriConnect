@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import type { GeoPoint } from "../utils/geoHelpers";
 
-const FALLBACK_LOCATION: GeoPoint = { lat: 33.6844, lng: 73.0479 }; // Islamabad, Pakistan
+const FALLBACK_LOCATION: GeoPoint = { lat: 34.1986, lng: 72.0404 }; // Mardan, Pakistan
 
 export interface UseLocationResult {
   location: GeoPoint;
