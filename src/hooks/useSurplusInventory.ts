@@ -33,7 +33,7 @@ export function useSurplusInventory() {
   }, [refresh]);
 
   const addItem = useCallback(
-    async (input: Omit<SurplusFoodItem, "id" | "postedAt">) => {
+    async (input: Omit<SurplusFoodItem, "id" | "postedAt" | "status">) => {
       const created = await postSurplusFoodItem(input);
       setItems((prev) => [created, ...prev]);
       return created;

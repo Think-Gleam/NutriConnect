@@ -11,53 +11,53 @@ export interface CommunityHealthCenter extends GeoPoint {
   source: "live" | "fallback";
 }
 
-// Islamabad, Pakistan — default city for NutriConnect deployments.
-export const DEFAULT_LOCATION: GeoPoint = { lat: 33.6844, lng: 73.0479 };
+// Mardan, KP, Pakistan — default city for NutriConnect deployments.
+export const DEFAULT_LOCATION: GeoPoint = { lat: 34.1986, lng: 72.0404 };
 
-const ISLAMABAD_FALLBACK: CommunityHealthCenter[] = [
+const MARDAN_FALLBACK: CommunityHealthCenter[] = [
   {
-    id: "isb-pims",
-    name: "Pakistan Institute of Medical Sciences (PIMS)",
-    address: "G-8/3, Islamabad",
-    lat: 33.7066,
-    lng: 73.0551,
-    servingCapacityPerDay: 420,
+    id: "mdn-mmc",
+    name: "Mardan Medical Complex (BKMC Teaching Hospital)",
+    address: "Sheikh Maltoon Town, Mardan",
+    lat: 34.1953,
+    lng: 72.0651,
+    servingCapacityPerDay: 480,
     source: "fallback",
   },
   {
-    id: "isb-polyclinic",
-    name: "Federal Government Polyclinic",
-    address: "G-6, Islamabad",
-    lat: 33.7167,
-    lng: 73.0879,
+    id: "mdn-dhq",
+    name: "District Headquarters (DHQ) Hospital Mardan",
+    address: "Hospital Road, Mardan City",
+    lat: 34.2009,
+    lng: 72.0426,
     servingCapacityPerDay: 360,
     source: "fallback",
   },
   {
-    id: "isb-cda-hospital",
-    name: "CDA Hospital",
-    address: "G-6/2, Islamabad",
-    lat: 33.7203,
-    lng: 73.0901,
-    servingCapacityPerDay: 180,
+    id: "mdn-nawaykalay",
+    name: "Naway Kalay Rural Health Center",
+    address: "Naway Kalay, Mardan",
+    lat: 34.2412,
+    lng: 72.0188,
+    servingCapacityPerDay: 140,
     source: "fallback",
   },
   {
-    id: "isb-kruh",
-    name: "KRL Hospital",
-    address: "Mauve Area, G-9/1, Islamabad",
-    lat: 33.6862,
-    lng: 73.0312,
+    id: "mdn-takhtbhai",
+    name: "Takhtbhai Tehsil Headquarters Hospital",
+    address: "Takhtbhai, Mardan District",
+    lat: 34.3389,
+    lng: 71.9456,
     servingCapacityPerDay: 220,
     source: "fallback",
   },
   {
-    id: "isb-shifa",
-    name: "Shifa International Hospital",
-    address: "H-8/4, Islamabad",
-    lat: 33.6766,
-    lng: 73.0717,
-    servingCapacityPerDay: 300,
+    id: "mdn-katlang",
+    name: "Katlang Rural Health Center",
+    address: "Katlang, Mardan District",
+    lat: 34.3553,
+    lng: 72.0719,
+    servingCapacityPerDay: 130,
     source: "fallback",
   },
 ];
@@ -86,9 +86,9 @@ function buildAddress(tags: Record<string, string> = {}): string {
     tags["addr:housenumber"],
     tags["addr:street"],
     tags["addr:suburb"],
-    tags["addr:city"] ?? "Islamabad",
+    tags["addr:city"] ?? "Mardan",
   ].filter(Boolean);
-  return parts.join(", ") || tags["addr:full"] || "Islamabad, Pakistan";
+  return parts.join(", ") || tags["addr:full"] || "Mardan, Pakistan";
 }
 
 export async function fetchNearbyHealthCenters(
@@ -97,7 +97,7 @@ export async function fetchNearbyHealthCenters(
 ): Promise<CommunityHealthCenter[]> {
   // Only call the network on the client — Overpass isn't reachable during SSR
   // on Cloudflare Workers and we don't want to delay first paint anyway.
-  if (typeof window === "undefined") return ISLAMABAD_FALLBACK;
+  if (typeof window === "undefined") return MARDAN_FALLBACK;
 
   const query = `[
     out:json][timeout:20];
@@ -134,10 +134,10 @@ export async function fetchNearbyHealthCenters(
       })
       .filter((c): c is CommunityHealthCenter => c !== null);
 
-    if (centers.length === 0) return ISLAMABAD_FALLBACK;
+    if (centers.length === 0) return MARDAN_FALLBACK;
     return centers.slice(0, 40);
   } catch (err) {
     console.warn("Overpass fetch failed, using fallback CHCs:", err);
-    return ISLAMABAD_FALLBACK;
+    return MARDAN_FALLBACK;
   }
 }

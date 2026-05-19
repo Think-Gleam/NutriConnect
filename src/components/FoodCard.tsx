@@ -1,12 +1,27 @@
-// Renders a single surplus food posting with category styling and expiry urgency.
-import { Clock, Package, Store } from "lucide-react";
-import type { FoodCategory, SurplusFoodItem } from "../services/inventory";
+// Renders a single surplus food posting with category styling, expiry urgency,
+// and supply-chain actions (Claim / Route to nearest CHC).
+import { Clock, MapPin, Package, Store } from "lucide-react";
+import { useState } from "react";
+import {
+  claimSurplusItem,
+  routeSurplusItem,
+  type FoodCategory,
+  type SurplusFoodItem,
+} from "../services/inventory";
+import type { CommunityHealthCenter } from "../services/healthCenters";
+import { findClosestHealthCenter, type GeoPoint } from "../utils/geoHelpers";
 
 const CATEGORY_STYLES: Record<FoodCategory, string> = {
   Protein: "bg-rose-100 text-rose-700 ring-rose-200",
   Veggie: "bg-emerald-100 text-emerald-700 ring-emerald-200",
   Fruit: "bg-amber-100 text-amber-700 ring-amber-200",
   Grain: "bg-indigo-100 text-indigo-700 ring-indigo-200",
+};
+
+const STATUS_BADGE: Record<SurplusFoodItem["status"], string> = {
+  available: "bg-slate-100 text-slate-600 ring-slate-200",
+  claimed: "bg-blue-100 text-blue-700 ring-blue-200",
+  routed: "bg-emerald-600 text-white ring-emerald-700",
 };
 
 function formatTimeRemaining(expiry: string): string {
@@ -18,8 +33,37 @@ function formatTimeRemaining(expiry: string): string {
   return `${Math.floor(hours / 24)}d left`;
 }
 
-export function FoodCard({ item }: { item: SurplusFoodItem }) {
+interface FoodCardProps {
+  item: SurplusFoodItem;
+  centers?: CommunityHealthCenter[];
+  origin?: GeoPoint;
+  onChange?: () => void;
+}
+
+export function FoodCard({ item, centers = [], origin, onChange }: FoodCardProps) {
   const urgent = new Date(item.expiryTime).getTime() - Date.now() < 6 * 3600000;
+  const [busy, setBusy] = useState<null | "claim" | "route">(null);
+
+  const closest =
+    origin && centers.length ? findClosestHealthCenter(origin, centers) : null;
+
+  async function handleClaim() {
+    if (!closest) return;
+    setBusy("claim");
+    await claimSurplusItem(item.id, closest.id, closest.name);
+    setBusy(null);
+    onChange?.();
+  }
+
+  async function handleRoute() {
+    if (!closest) return;
+    setBusy("route");
+    await routeSurplusItem(item.id, closest.id, closest.name);
+    setBusy(null);
+    onChange?.();
+  }
+
+  const disabled = item.status !== "available" || !closest;
 
   return (
     <article className="flex flex-col gap-3 rounded-xl border border-slate-200 bg-white p-5 shadow-sm transition hover:border-emerald-300 hover:shadow-md">
@@ -46,7 +90,40 @@ export function FoodCard({ item }: { item: SurplusFoodItem }) {
           <Store className="h-4 w-4" />
           <span className="truncate">{item.vendorName}</span>
         </div>
+        {item.assignedChcName && (
+          <div className="col-span-2 flex items-center gap-1.5 text-emerald-700">
+            <MapPin className="h-4 w-4" />
+            <span className="truncate">→ {item.assignedChcName}</span>
+          </div>
+        )}
       </dl>
+
+      <div className="flex items-center justify-between gap-2 border-t border-slate-100 pt-3">
+        <span
+          className={`rounded-full px-2 py-0.5 text-[11px] font-medium uppercase tracking-wide ring-1 ring-inset ${STATUS_BADGE[item.status]}`}
+        >
+          {item.status}
+        </span>
+        <div className="flex gap-2">
+          <button
+            type="button"
+            onClick={handleClaim}
+            disabled={disabled || busy !== null}
+            className="rounded-md border border-slate-300 px-3 py-1.5 text-xs font-medium text-slate-700 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            {busy === "claim" ? "Claiming…" : "Claim"}
+          </button>
+          <button
+            type="button"
+            onClick={handleRoute}
+            disabled={disabled || busy !== null}
+            className="rounded-md bg-emerald-600 px-3 py-1.5 text-xs font-medium text-white transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-50"
+            title={closest ? `Route to ${closest.name}` : "No CHC available"}
+          >
+            {busy === "route" ? "Routing…" : "Route to CHC"}
+          </button>
+        </div>
+      </div>
     </article>
   );
 }

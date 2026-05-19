@@ -1,17 +1,19 @@
 // Aggregates surplus postings into SDG 3 impact metrics.
-import { HeartPulse, Salad, Users } from "lucide-react";
+import { useMemo } from "react";
+import { Flame, HeartPulse, Salad, Users } from "lucide-react";
 import type { SurplusFoodItem } from "../services/inventory";
 import {
+  calculateAggregateImpact,
   calculateCategoryBreakdown,
-  calculateLivesImpacted,
-  calculateNutritionalServings,
 } from "../utils/nutritionImpact";
 
 export function ImpactDashboard({ items }: { items: SurplusFoodItem[] }) {
-  const servings = calculateNutritionalServings(items);
-  const lives = calculateLivesImpacted(items);
-  const breakdown = calculateCategoryBreakdown(items);
-  const totalKg = items.reduce((s, i) => s + i.quantity, 0);
+  const impact = useMemo(() => calculateAggregateImpact(items), [items]);
+  const breakdown = useMemo(() => calculateCategoryBreakdown(items), [items]);
+  const totalKg = useMemo(
+    () => items.reduce((s, i) => s + i.quantity, 0),
+    [items],
+  );
 
   return (
     <section
@@ -23,17 +25,22 @@ export function ImpactDashboard({ items }: { items: SurplusFoodItem[] }) {
       </p>
       <h2 className="mt-1 text-2xl font-semibold">Lives reached through nutrition</h2>
 
-      <div className="mt-6 grid gap-4 sm:grid-cols-3">
-        <Stat icon={<Users className="h-5 w-5" />} value={lives} label="Lives Impacted" />
+      <div className="mt-6 grid gap-4 sm:grid-cols-2">
+        <Stat icon={<Users className="h-5 w-5" />} value={impact.livesImpacted} label="Lives Impacted" />
         <Stat
           icon={<Salad className="h-5 w-5" />}
-          value={servings}
+          value={Math.round(impact.servings)}
           label="Nutritional Servings"
         />
         <Stat
           icon={<HeartPulse className="h-5 w-5" />}
           value={`${totalKg} kg`}
           label="Food Rescued"
+        />
+        <Stat
+          icon={<Flame className="h-5 w-5" />}
+          value={`${impact.calories.toLocaleString()} kcal`}
+          label={`Protein delivered: ${impact.proteinGrams} g`}
         />
       </div>
 
