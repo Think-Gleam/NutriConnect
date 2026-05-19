@@ -1,17 +1,19 @@
 // Aggregates surplus postings into SDG 3 impact metrics.
-import { HeartPulse, Salad, Users } from "lucide-react";
+import { useMemo } from "react";
+import { Flame, HeartPulse, Salad, Users } from "lucide-react";
 import type { SurplusFoodItem } from "../services/inventory";
 import {
+  calculateAggregateImpact,
   calculateCategoryBreakdown,
-  calculateLivesImpacted,
-  calculateNutritionalServings,
 } from "../utils/nutritionImpact";
 
 export function ImpactDashboard({ items }: { items: SurplusFoodItem[] }) {
-  const servings = calculateNutritionalServings(items);
-  const lives = calculateLivesImpacted(items);
-  const breakdown = calculateCategoryBreakdown(items);
-  const totalKg = items.reduce((s, i) => s + i.quantity, 0);
+  const impact = useMemo(() => calculateAggregateImpact(items), [items]);
+  const breakdown = useMemo(() => calculateCategoryBreakdown(items), [items]);
+  const totalKg = useMemo(
+    () => items.reduce((s, i) => s + i.quantity, 0),
+    [items],
+  );
 
   return (
     <section
