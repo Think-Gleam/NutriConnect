@@ -29,11 +29,29 @@ const defaultIcon = L.icon({
 
 export function MapView() {
   const [centers, setCenters] = useState<CommunityHealthCenter[]>([]);
-  const { location } = useLocation();
+  const [loading, setLoading] = useState(true);
+  const { location, isFallback } = useLocation();
 
   useEffect(() => {
-    fetchNearbyHealthCenters().then(setCenters);
-  }, []);
+    let cancelled = false;
+    setLoading(true);
+    fetchNearbyHealthCenters(location).then((data) => {
+      if (!cancelled) {
+        setCenters(data);
+        setLoading(false);
+      }
+    });
+    // Re-poll every 5 minutes so freshly mapped clinics show up.
+    const id = window.setInterval(() => {
+      fetchNearbyHealthCenters(location).then((data) => {
+        if (!cancelled) setCenters(data);
+      });
+    }, 5 * 60 * 1000);
+    return () => {
+      cancelled = true;
+      window.clearInterval(id);
+    };
+  }, [location.lat, location.lng]);
 
   const closest = findClosestHealthCenter(location, centers);
 
