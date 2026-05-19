@@ -72,7 +72,13 @@ function HomePage() {
           ) : (
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {items.map((item) => (
-                <FoodCard key={item.id} item={item} />
+                <FoodCard
+                  key={item.id}
+                  item={item}
+                  centers={centers}
+                  origin={location}
+                  onChange={refresh}
+                />
               ))}
             </div>
           )}
