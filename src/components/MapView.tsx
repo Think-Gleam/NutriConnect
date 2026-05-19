@@ -29,11 +29,29 @@ const defaultIcon = L.icon({
 
 export function MapView() {
   const [centers, setCenters] = useState<CommunityHealthCenter[]>([]);
-  const { location } = useLocation();
+  const [loading, setLoading] = useState(true);
+  const { location, isFallback } = useLocation();
 
   useEffect(() => {
-    fetchNearbyHealthCenters().then(setCenters);
-  }, []);
+    let cancelled = false;
+    setLoading(true);
+    fetchNearbyHealthCenters(location).then((data) => {
+      if (!cancelled) {
+        setCenters(data);
+        setLoading(false);
+      }
+    });
+    // Re-poll every 5 minutes so freshly mapped clinics show up.
+    const id = window.setInterval(() => {
+      fetchNearbyHealthCenters(location).then((data) => {
+        if (!cancelled) setCenters(data);
+      });
+    }, 5 * 60 * 1000);
+    return () => {
+      cancelled = true;
+      window.clearInterval(id);
+    };
+  }, [location.lat, location.lng]);
 
   const closest = findClosestHealthCenter(location, centers);
 
@@ -49,6 +67,11 @@ export function MapView() {
         <h2 className="mt-1 text-2xl font-semibold text-slate-900">
           Nearby pickup points
         </h2>
+        <p className="mt-1 text-xs text-slate-500">
+          {loading
+            ? "Fetching live health centers from OpenStreetMap…"
+            : `${centers.length} centers · ${isFallback ? "default Islamabad location" : "your current location"}`}
+        </p>
         {closest && (
           <p className="mt-1 text-sm text-slate-600">
             Closest CHC: <span className="font-medium text-slate-900">{closest.name}</span>
