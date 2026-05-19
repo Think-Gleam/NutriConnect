@@ -67,6 +67,11 @@ export function MapView() {
         <h2 className="mt-1 text-2xl font-semibold text-slate-900">
           Nearby pickup points
         </h2>
+        <p className="mt-1 text-xs text-slate-500">
+          {loading
+            ? "Fetching live health centers from OpenStreetMap…"
+            : `${centers.length} centers · ${isFallback ? "default Islamabad location" : "your current location"}`}
+        </p>
         {closest && (
           <p className="mt-1 text-sm text-slate-600">
             Closest CHC: <span className="font-medium text-slate-900">{closest.name}</span>
