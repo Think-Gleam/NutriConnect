@@ -38,9 +38,10 @@ interface FoodCardProps {
   centers?: CommunityHealthCenter[];
   origin?: GeoPoint;
   onChange?: () => void;
+  onDelete?: () => void | Promise<void>;
 }
 
-export function FoodCard({ item, centers = [], origin, onChange }: FoodCardProps) {
+export function FoodCard({ item, centers = [], origin, onChange, onDelete }: FoodCardProps) {
   const urgent = new Date(item.expiryTime).getTime() - Date.now() < 6 * 3600000;
   const [busy, setBusy] = useState<null | "claim" | "route">(null);
 
