@@ -16,6 +16,9 @@ const MapView = lazy(() =>
 );
 
 export const Route = createFileRoute("/")({
+  head: () => ({
+    links: [{ rel: "canonical", href: "https://nutriconnect-web.lovable.app/" }],
+  }),
   component: HomePage,
 });
 
