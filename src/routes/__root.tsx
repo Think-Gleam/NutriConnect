@@ -72,14 +72,20 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { title: "NutriConnect — Surplus food for Community Health Centers (SDG 3)" },
+      {
+        name: "description",
+        content:
+          "NutriConnect routes surplus nutritious food from local vendors to nearby Community Health Centers, advancing UN SDG 3.",
+      },
+      { property: "og:title", content: "NutriConnect — SDG 3 Impact" },
+      {
+        property: "og:description",
+        content:
+          "Connect surplus food with Community Health Centers to combat malnutrition.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
-      { name: "twitter:site", content: "@Lovable" },
     ],
     links: [
       {
