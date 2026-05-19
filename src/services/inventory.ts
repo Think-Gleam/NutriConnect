@@ -121,3 +121,11 @@ export function routeSurplusItem(id: string, chcId: string, chcName: string) {
     assignedChcName: chcName,
   });
 }
+
+export async function deleteSurplusItem(id: string): Promise<boolean> {
+  const items = readStore();
+  const next = items.filter((i) => i.id !== id);
+  if (next.length === items.length) return false;
+  writeStore(next);
+  return true;
+}
