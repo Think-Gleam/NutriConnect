@@ -1,5 +1,5 @@
 // Vendor-facing form to log surplus nutritious food available for CHC pickup.
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import type { FoodCategory } from "../services/inventory";
 import { useSurplusInventory } from "../hooks/useSurplusInventory";
 
@@ -17,8 +17,13 @@ export function VendorDashboard() {
   const [itemName, setItemName] = useState("");
   const [category, setCategory] = useState<FoodCategory>("Veggie");
   const [quantity, setQuantity] = useState(1);
-  const [expiry, setExpiry] = useState(defaultExpiry());
+  const [expiry, setExpiry] = useState("");
   const [submittedAt, setSubmittedAt] = useState<number | null>(null);
+
+  // Set default expiry on client only to avoid SSR/CSR hydration mismatch.
+  useEffect(() => {
+    setExpiry((prev) => prev || defaultExpiry());
+  }, []);
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
