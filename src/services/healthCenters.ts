@@ -117,7 +117,7 @@ export async function fetchNearbyHealthCenters(
     if (!res.ok) throw new Error(`Overpass ${res.status}`);
     const payload = (await res.json()) as { elements?: OverpassElement[] };
     const centers: CommunityHealthCenter[] = (payload.elements ?? [])
-      .map((el) => {
+      .map((el): CommunityHealthCenter | null => {
         const lat = el.lat ?? el.center?.lat;
         const lon = el.lon ?? el.center?.lon;
         if (lat == null || lon == null) return null;
@@ -129,7 +129,7 @@ export async function fetchNearbyHealthCenters(
           lat,
           lng: lon,
           servingCapacityPerDay: estimateCapacity(tags),
-          source: "live" as const,
+          source: "live",
         };
       })
       .filter((c): c is CommunityHealthCenter => c !== null);
