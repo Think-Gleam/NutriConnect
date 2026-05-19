@@ -16,7 +16,7 @@ export interface SurplusFoodItem {
   assignedChcName?: string;
 }
 
-const STORAGE_KEY = "nutriconnect.surplus.v2";
+const STORAGE_KEY = "nutriconnect.surplus.v3";
 
 const seedItems: SurplusFoodItem[] = [
   {
