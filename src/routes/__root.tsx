@@ -78,7 +78,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         content:
           "NutriConnect routes surplus nutritious food from local vendors to nearby Community Health Centers, advancing UN SDG 3.",
       },
-      { property: "og:title", content: "NutriConnect — SDG 3 Impact" },
+      { property: "og:title", content: "NutriConnect — Surplus food for Community Health Centers (SDG 3)" },
       {
         property: "og:description",
         content:
@@ -86,6 +86,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
+      { name: "twitter:title", content: "NutriConnect — Surplus food for Community Health Centers (SDG 3)" },
+      { name: "description", content: "NutriConnect routes surplus nutritious food from local vendors to nearby Community Health Centers in real-time, fighting malnutrition and supporting UN SDG 3." },
+      { property: "og:description", content: "NutriConnect routes surplus nutritious food from local vendors to nearby Community Health Centers in real-time, fighting malnutrition and supporting UN SDG 3." },
+      { name: "twitter:description", content: "NutriConnect routes surplus nutritious food from local vendors to nearby Community Health Centers in real-time, fighting malnutrition and supporting UN SDG 3." },
+      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/UKXaDwCVivaudjGuxwUlu11jQQd2/social-images/social-1779190328139-A_sleek,_modern_web_dashboard_202605191632.webp" },
+      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/UKXaDwCVivaudjGuxwUlu11jQQd2/social-images/social-1779190328139-A_sleek,_modern_web_dashboard_202605191632.webp" },
     ],
     links: [
       {
