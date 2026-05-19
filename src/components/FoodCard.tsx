@@ -1,6 +1,6 @@
 // Renders a single surplus food posting with category styling, expiry urgency,
 // and supply-chain actions (Claim / Route to nearest CHC).
-import { Clock, MapPin, Package, Store } from "lucide-react";
+import { Clock, MapPin, Package, Store, Trash2 } from "lucide-react";
 import { useState } from "react";
 import {
   claimSurplusItem,
