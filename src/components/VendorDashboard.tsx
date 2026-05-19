@@ -144,20 +144,27 @@ export function VendorDashboard() {
           <input
             type="datetime-local"
             required
+            min={minExpiry || undefined}
             value={expiry}
             onChange={(e) => setExpiry(e.target.value)}
             className="input"
+            aria-invalid={expiryInPast}
           />
+          {expiryInPast && (
+            <span className="text-xs font-medium text-rose-600">
+              Expiry must be a future time.
+            </span>
+          )}
         </Field>
         <div className="sm:col-span-2 flex items-center justify-between gap-3">
-          {submittedAt && (
-            <p className="text-sm text-emerald-700">
-              ✓ Posted successfully — visible to nearby CHCs.
-            </p>
+          {error && <p className="text-sm font-medium text-rose-600">{error}</p>}
+          {!error && statusMsg && (
+            <p className="text-sm text-emerald-700">{statusMsg}</p>
           )}
           <button
             type="submit"
-            className="ml-auto inline-flex items-center justify-center rounded-lg bg-emerald-600 px-5 py-2.5 text-sm font-medium text-white shadow-sm transition hover:bg-emerald-700"
+            disabled={!canSubmit}
+            className="ml-auto inline-flex items-center justify-center rounded-lg bg-emerald-600 px-5 py-2.5 text-sm font-medium text-white shadow-sm transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-50"
           >
             Post surplus
           </button>
