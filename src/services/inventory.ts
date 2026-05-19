@@ -36,20 +36,20 @@ function writeStore(items: SurplusFoodItem[]) {
 const seedItems: SurplusFoodItem[] = [
   {
     id: "seed-1",
-    itemName: "Fresh Spinach Bundles",
+    itemName: "Fresh Palak (Spinach) Bundles",
     category: "Veggie",
     quantity: 12,
     expiryTime: new Date(Date.now() + 1000 * 60 * 60 * 18).toISOString(),
-    vendorName: "Green Valley Grocers",
+    vendorName: "F-10 Sabzi Mandi",
     postedAt: new Date().toISOString(),
   },
   {
     id: "seed-2",
-    itemName: "Lentil Stock",
+    itemName: "Daal Chana (Lentils)",
     category: "Protein",
     quantity: 8,
     expiryTime: new Date(Date.now() + 1000 * 60 * 60 * 48).toISOString(),
-    vendorName: "Sunrise Dal Mart",
+    vendorName: "Karachi Company Grocers, G-9",
     postedAt: new Date().toISOString(),
   },
   {
@@ -58,7 +58,7 @@ const seedItems: SurplusFoodItem[] = [
     category: "Fruit",
     quantity: 15,
     expiryTime: new Date(Date.now() + 1000 * 60 * 60 * 24).toISOString(),
-    vendorName: "Riverside Fruit Co.",
+    vendorName: "Aabpara Fruit Market, G-6",
     postedAt: new Date().toISOString(),
   },
 ];
