@@ -78,7 +78,8 @@ function HomePage() {
                   centers={centers}
                   origin={location}
                   onChange={refresh}
-                />
+                  onDelete={() => removeItem(item.id)}
+                />)
               ))}
             </div>
           )}
