@@ -1,6 +1,6 @@
 // Renders a single surplus food posting with category styling, expiry urgency,
 // and supply-chain actions (Claim / Route to nearest CHC).
-import { Clock, MapPin, Package, Store } from "lucide-react";
+import { Clock, MapPin, Package, Store, Trash2 } from "lucide-react";
 import { useState } from "react";
 import {
   claimSurplusItem,
@@ -38,9 +38,10 @@ interface FoodCardProps {
   centers?: CommunityHealthCenter[];
   origin?: GeoPoint;
   onChange?: () => void;
+  onDelete?: () => void | Promise<void>;
 }
 
-export function FoodCard({ item, centers = [], origin, onChange }: FoodCardProps) {
+export function FoodCard({ item, centers = [], origin, onChange, onDelete }: FoodCardProps) {
   const urgent = new Date(item.expiryTime).getTime() - Date.now() < 6 * 3600000;
   const [busy, setBusy] = useState<null | "claim" | "route">(null);
 
@@ -105,6 +106,18 @@ export function FoodCard({ item, centers = [], origin, onChange }: FoodCardProps
           {item.status}
         </span>
         <div className="flex gap-2">
+          {onDelete && (
+            <button
+              type="button"
+              onClick={() => onDelete()}
+              disabled={busy !== null}
+              className="rounded-md border border-rose-200 px-2 py-1.5 text-xs font-medium text-rose-600 transition hover:bg-rose-50 disabled:cursor-not-allowed disabled:opacity-50"
+              title="Remove posting"
+              aria-label="Remove posting"
+            >
+              <Trash2 className="h-3.5 w-3.5" />
+            </button>
+          )}
           <button
             type="button"
             onClick={handleClaim}

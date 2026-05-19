@@ -16,7 +16,7 @@ export interface SurplusFoodItem {
   assignedChcName?: string;
 }
 
-const STORAGE_KEY = "nutriconnect.surplus.v2";
+const STORAGE_KEY = "nutriconnect.surplus.v3";
 
 const seedItems: SurplusFoodItem[] = [
   {
@@ -120,4 +120,12 @@ export function routeSurplusItem(id: string, chcId: string, chcName: string) {
     assignedChcId: chcId,
     assignedChcName: chcName,
   });
+}
+
+export async function deleteSurplusItem(id: string): Promise<boolean> {
+  const items = readStore();
+  const next = items.filter((i) => i.id !== id);
+  if (next.length === items.length) return false;
+  writeStore(next);
+  return true;
 }

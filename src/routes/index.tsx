@@ -20,7 +20,7 @@ export const Route = createFileRoute("/")({
 });
 
 function HomePage() {
-  const { items, refresh } = useSurplusInventory();
+  const { items, refresh, removeItem } = useSurplusInventory();
   const { location } = useLocation();
   const [centers, setCenters] = useState<CommunityHealthCenter[]>([]);
   const [mounted, setMounted] = useState(false);
@@ -78,6 +78,7 @@ function HomePage() {
                   centers={centers}
                   origin={location}
                   onChange={refresh}
+                  onDelete={() => removeItem(item.id)}
                 />
               ))}
             </div>

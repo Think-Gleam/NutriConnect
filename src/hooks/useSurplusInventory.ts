@@ -1,6 +1,7 @@
 // Custom hook wrapping the inventory service so components stay declarative.
 import { useCallback, useEffect, useState } from "react";
 import {
+  deleteSurplusItem,
   fetchSurplusInventory,
   postSurplusFoodItem,
   type SurplusFoodItem,
@@ -19,8 +20,6 @@ export function useSurplusInventory() {
 
   useEffect(() => {
     refresh();
-    // Poll the inventory store so newly posted items (including from other
-    // tabs) appear without a manual reload.
     const id = window.setInterval(refresh, 15_000);
     const onStorage = (e: StorageEvent) => {
       if (e.key === null || e.key.startsWith("nutriconnect.surplus")) refresh();
@@ -41,5 +40,10 @@ export function useSurplusInventory() {
     [],
   );
 
-  return { items, loading, addItem, refresh };
+  const removeItem = useCallback(async (id: string) => {
+    await deleteSurplusItem(id);
+    setItems((prev) => prev.filter((i) => i.id !== id));
+  }, []);
+
+  return { items, loading, addItem, removeItem, refresh };
 }
